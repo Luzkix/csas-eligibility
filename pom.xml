@@ -1,107 +1,281 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.4</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>cz.csas</groupId>
-	<artifactId>eligibility</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>csas-eligibility</name>
-	<description>csas-eligibility</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
-	<properties>
-		<java.version>21</java.version>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-database-postgresql</artifactId>
-		</dependency>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.4</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <groupId>cz.csas</groupId>
+    <artifactId>eligibility</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>csas-eligibility</name>
+    <description>Eligibility service for client validation</description>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <url/>
+    <licenses>
+        <license/>
+    </licenses>
+    <developers>
+        <developer/>
+    </developers>
+    <scm>
+        <connection/>
+        <developerConnection/>
+        <tag/>
+        <url/>
+    </scm>
+
+    <properties>
+        <java.version>21</java.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- Basic dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Particular implementation of @Slf4j -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.18</version>
+        </dependency>
+
+        <!-- Swagger/OpenAPI -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.6</version> <!-- version must be specified -->
+        </dependency>
+
+        <!-- další dependencies pro openapi - to generuje různé anotace apod, které mohou využívat tyto závislosti a pokud nejsou nainstalovány, aplikace je nezná a kompilace spadne -->
+        <!-- Jackson Annotations -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.18.3</version>
+        </dependency>
+
+        <!-- řešení neznámého importu org.openapitools.jackson.nullable.JsonNullable -->
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.2.6</version>
+        </dependency>
+
+        <!-- řešení neznámého importu import org.hibernate.validator.constraints.*; -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- OpenAPI Generator Plugin -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.12.0</version>
+                <executions>
+                    <!-- 1. Generování Application Server API (api-ui) -->
+                    <execution>
+                        <id>generate-application-server</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/api/API_definition.yaml</inputSpec>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>cz.csas.eligibility.api-ui</apiPackage>
+                            <modelPackage>cz.csas.eligibility.model</modelPackage>
+                            <invokerPackage>cz.csas.eligibility</invokerPackage>
+                            <globalProperties>
+                                <apis>ApplicationServer</apis> <!-- generates only this api, not other 2-->
+                            </globalProperties>
+                            <configOptions>
+                                <configPackage>cz.csas.eligibility.config</configPackage>
+                                <delegatePattern>true</delegatePattern>
+                                <interfaceOnly>true</interfaceOnly>
+                                <useTags>true</useTags>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <dateLibrary>java8</dateLibrary>
+                                <useBeanValidation>true</useBeanValidation>
+                                <performBeanValidation>true</performBeanValidation>
+                                <useOptional>false</useOptional>
+                                <useResponseEntity>true</useResponseEntity>
+                                <implicitHeaders>true</implicitHeaders>
+                            </configOptions>
+                            <!-- Tag-based filtrování -->
+                            <openapiNormalizer>FILTER=tag:Application server</openapiNormalizer>
+                            <cleanupOutput>true</cleanupOutput> <!-- promazání cílové složky před generováním nových souborů -->
+                        </configuration>
+                    </execution>
+
+                    <!-- 2. Generování Clients API klienta (api-clients) -->
+                    <execution>
+                        <id>generate-clients-api-client</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/api/API_definition.yaml</inputSpec>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <generatorName>java</generatorName>
+                            <library>resttemplate</library>
+                            <apiPackage>cz.csas.eligibility.api-clients.api</apiPackage>
+                            <modelPackage>cz.csas.eligibility.model</modelPackage>
+                            <globalProperties>
+                                <apis>ClientsServer</apis> <!-- generates only this api, not other 2-->
+                                <serverIndex>1</serverIndex>
+                            </globalProperties>
+                            <serverVariableOverrides>host=clients.cluster.domain.cz,port=443,scheme=http,basePath=</serverVariableOverrides> <!-- přepsání baseUrl serveru pomocí serverVariableOverrides-->
+                            <configOptions>
+                                <configPackage>cz.csas.eligibility.api-clients.config</configPackage>
+                                <dateLibrary>java8</dateLibrary>
+                                <generateClientAsBean>true</generateClientAsBean>
+                                <useJakartaEe>true</useJakartaEe>
+                                <generateConstructorWithAllArgs>false</generateConstructorWithAllArgs>
+                            </configOptions>
+                            <generateApis>true</generateApis>
+                            <generateModels>false</generateModels>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <openapiNormalizer>FILTER=tag:Clients server</openapiNormalizer>
+                        </configuration>
+                    </execution>
+
+                    <!-- 3. Generování Accounts API klienta (api-accounts)-->
+                    <execution>
+                        <id>generate-accounts-api-client</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/api/API_definition.yaml</inputSpec>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <generatorName>java</generatorName>
+                            <library>resttemplate</library>
+                            <apiPackage>cz.csas.eligibility.api-accounts.api</apiPackage>
+                            <modelPackage>cz.csas.eligibility.model</modelPackage>
+                            <globalProperties>
+                                <apis>AccountsServer</apis> <!-- generates only this api, not other 2-->
+                                <serverIndex>2</serverIndex>
+                            </globalProperties>
+                            <serverVariableOverrides>host=accounts.cluster.domain.cz,port=,scheme=https,basePath=</serverVariableOverrides> <!-- přepsání baseUrl serveru pomocí serverVariableOverrides-->
+                            <configOptions>
+                                <configPackage>cz.csas.eligibility.api-accounts.config</configPackage>
+                                <dateLibrary>java8</dateLibrary>
+                                <generateClientAsBean>true</generateClientAsBean>
+                                <useJakartaEe>true</useJakartaEe>
+                                <generateConstructorWithAllArgs>false</generateConstructorWithAllArgs>
+                                <!-- Nastavení basePath pro Accounts server -->
+                                <apiBasePath>https://accounts.cluster.domain.cz</apiBasePath>
+                            </configOptions>
+                            <generateApis>true</generateApis>
+                            <generateModels>false</generateModels>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <openapiNormalizer>FILTER=tag:Accounts server</openapiNormalizer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Build Helper Plugin for adding generated sources -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>add-generated-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/openapi/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

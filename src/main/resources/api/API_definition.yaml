@@ -3,12 +3,44 @@ info:
   title: OpenAPI definition
   version: v1
 servers:
-  - url: http://localhost:8080
+  - url: '{scheme}://{host}:{port}{basePath}'
     description: Application server
-  - url: http://clients.cluster.domain.cz:443
+    variables:
+      scheme:
+        default: http
+        enum:
+          - http
+          - https
+      host:
+        default: localhost
+      port:
+        default: '8080'
+      basePath:
+        default: ''
+  - url: '{scheme}://{host}:{port}{basePath}'
     description: Clients server
-  - url: https://accounts.cluster.domain.cz
+    variables:
+      scheme:
+        default: http
+        enum:
+          - http
+      host:
+        default: clients.cluster.domain.cz
+      port:
+        default: '443'
+      basePath:
+        default: ''
+  - url: '{scheme}://{host}{basePath}'
     description: Accounts server
+    variables:
+      scheme:
+        default: https
+        enum:
+          - https
+      host:
+        default: accounts.cluster.domain.cz
+      basePath:
+        default: ''
 paths:
   /api/v1/eligibility:
     get:
