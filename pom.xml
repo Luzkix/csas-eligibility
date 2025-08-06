@@ -206,7 +206,7 @@
                                 <apis>ClientsServer</apis> <!-- generates only this api, not other 2-->
                                 <serverIndex>1</serverIndex>
                             </globalProperties>
-                            <serverVariableOverrides>host=clients.cluster.domain.cz,port=443,scheme=http,basePath=</serverVariableOverrides> <!-- přepsání baseUrl serveru pomocí serverVariableOverrides-->
+                            <serverVariableOverrides>host=clients.cluster.domain.cz,port=443,scheme=https,basePath=</serverVariableOverrides> <!-- přepsání baseUrl serveru pomocí serverVariableOverrides-->
                             <configOptions>
                                 <configPackage>cz.csas.eligibility.api-clients.config</configPackage>
                                 <dateLibrary>java8</dateLibrary>

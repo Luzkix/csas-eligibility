@@ -21,9 +21,9 @@ servers:
     description: Clients server
     variables:
       scheme:
-        default: http
+        default: https
         enum:
-          - http
+          - https
       host:
         default: clients.cluster.domain.cz
       port:
