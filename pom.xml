@@ -163,28 +163,17 @@
                             <generatorName>spring</generatorName>
                             <apiPackage>cz.csas.eligibility.api-ui</apiPackage>
                             <modelPackage>cz.csas.eligibility.model</modelPackage>
-                            <invokerPackage>cz.csas.eligibility</invokerPackage>
+                            <invokerPackage>cz.csas.eligibility.invoker</invokerPackage>
                             <globalProperties>
                                 <apis>ApplicationServer</apis> <!-- generates only this api, not other 2-->
                             </globalProperties>
                             <configOptions>
-                                <configPackage>cz.csas.eligibility.config</configPackage>
-                                <delegatePattern>true</delegatePattern>
                                 <interfaceOnly>true</interfaceOnly>
-                                <useTags>true</useTags>
-                                <skipDefaultInterface>true</skipDefaultInterface>
-                                <useSpringBoot3>true</useSpringBoot3>
-                                <dateLibrary>java8</dateLibrary>
-                                <useBeanValidation>true</useBeanValidation>
-                                <performBeanValidation>true</performBeanValidation>
-                                <useOptional>false</useOptional>
-                                <useResponseEntity>true</useResponseEntity>
-                                <implicitHeaders>true</implicitHeaders>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp> <!-- zbytečný timestamp pokud jej nepotřebuju cíleně -->
+                                <useSpringBoot3>true</useSpringBoot3> <!-- Aktivace Spring Boot 3 kompatibility, např. místo javax importů se generují jakarta importy kt.jsou kompatibilní se spring boot 3-->
+                                <useTags>true</useTags> <!-- zajisti pouzivani tagu a podle nich bude openapi generator vytvaret jednotliva API -->
                             </configOptions>
-                            <generateApiTests>false</generateApiTests>
-                            <generateModelTests>false</generateModelTests>
-                            <!-- Tag-based filtrování -->
-                            <openapiNormalizer>FILTER=tag:Application server</openapiNormalizer>
+                            <openapiNormalizer>FILTER=tag:Application server</openapiNormalizer> <!-- Tag-based filtrování -->
                             <cleanupOutput>true</cleanupOutput> <!-- promazání cílové složky před generováním nových souborů -->
                         </configuration>
                     </execution>
@@ -209,15 +198,14 @@
                             <serverVariableOverrides>host=clients.cluster.domain.cz,port=443,scheme=https,basePath=</serverVariableOverrides> <!-- přepsání baseUrl serveru pomocí serverVariableOverrides-->
                             <configOptions>
                                 <configPackage>cz.csas.eligibility.api-clients.config</configPackage>
-                                <dateLibrary>java8</dateLibrary>
                                 <generateClientAsBean>true</generateClientAsBean>
                                 <useJakartaEe>true</useJakartaEe>
-                                <generateConstructorWithAllArgs>false</generateConstructorWithAllArgs>
+                                <generateConstructorWithAllArgs>false</generateConstructorWithAllArgs> <!-- Není nutné ale užitečné pro kompatibilitu s @Lombok -->
                             </configOptions>
                             <generateApis>true</generateApis>
                             <generateModels>false</generateModels>
                             <generateSupportingFiles>true</generateSupportingFiles>
-                            <openapiNormalizer>FILTER=tag:Clients server</openapiNormalizer>
+                            <openapiNormalizer>FILTER=tag:Clients server</openapiNormalizer> <!-- Tag-based filtrování -->
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
                         </configuration>
@@ -243,17 +231,14 @@
                             <serverVariableOverrides>host=accounts.cluster.domain.cz,port=,scheme=https,basePath=</serverVariableOverrides> <!-- přepsání baseUrl serveru pomocí serverVariableOverrides-->
                             <configOptions>
                                 <configPackage>cz.csas.eligibility.api-accounts.config</configPackage>
-                                <dateLibrary>java8</dateLibrary>
                                 <generateClientAsBean>true</generateClientAsBean>
                                 <useJakartaEe>true</useJakartaEe>
-                                <generateConstructorWithAllArgs>false</generateConstructorWithAllArgs>
-                                <!-- Nastavení basePath pro Accounts server -->
-                                <apiBasePath>https://accounts.cluster.domain.cz</apiBasePath>
+                                <generateConstructorWithAllArgs>false</generateConstructorWithAllArgs> <!-- Není nutné ale užitečné pro kompatibilitu s @Lombok -->
                             </configOptions>
                             <generateApis>true</generateApis>
                             <generateModels>false</generateModels>
                             <generateSupportingFiles>true</generateSupportingFiles>
-                            <openapiNormalizer>FILTER=tag:Accounts server</openapiNormalizer>
+                            <openapiNormalizer>FILTER=tag:Accounts server</openapiNormalizer> <!-- Tag-based filtrování -->
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
                         </configuration>
@@ -261,7 +246,7 @@
                 </executions>
             </plugin>
 
-            <!-- Build Helper Plugin for adding generated sources -->
+            <!-- Build Helper Plugin for adding generated sources as project source -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
