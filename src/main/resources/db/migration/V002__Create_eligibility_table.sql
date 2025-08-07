@@ -1,0 +1,7 @@
+CREATE TABLE eligibility (
+    id BIGSERIAL PRIMARY KEY,
+    client_id VARCHAR(100) NOT NULL,
+    correlation_id VARCHAR(100),
+    result VARCHAR(20) NOT NULL,
+    checked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
