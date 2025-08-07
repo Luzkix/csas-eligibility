@@ -25,13 +25,6 @@ public class ApiServiceClientsImpl implements ApiServiceClients {
         this.clientsApiKey = clientsApiKey;
     }
 
-    /**
-     * Fetches client details based on provided clientId.
-     * @param clientId      the client identifier (required)
-     * @param correlationId the correlation id for tracing (optional)
-     * @return GetClientDetailResponse with client's details
-     * @throws ExternalApiException on communication or server errors
-     */
     @Override
     public GetClientDetailResponse getClientDetail(String clientId, String correlationId) throws ExternalApiException {
         try {

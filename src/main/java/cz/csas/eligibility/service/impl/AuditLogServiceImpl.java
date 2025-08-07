@@ -9,6 +9,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.CompletableFuture;
+
+/**
+ * Implementation of AuditLogService methods
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -19,7 +24,7 @@ public class AuditLogServiceImpl implements AuditLogService {
     @Override
     @Async
     @Transactional
-    public void saveAuditLog(AuditLog auditLog) {
+    public CompletableFuture<AuditLog> saveAuditLog(AuditLog auditLog) {
         try {
             // limit logged request/response body length to some reasonable value
             if (auditLog.getRequestBody() != null && auditLog.getRequestBody().length() > 10000) {
@@ -29,10 +34,13 @@ public class AuditLogServiceImpl implements AuditLogService {
                 auditLog.setResponseBody(auditLog.getResponseBody().substring(0, 10000) + "... [TRUNCATED]");
             }
 
-            auditLogRepository.save(auditLog);
+            AuditLog savedLog = auditLogRepository.save(auditLog);
             log.debug("Audit log saved with requestId: {}", auditLog.getRequestId());
+
+            return CompletableFuture.completedFuture(savedLog);
         } catch (Exception e) {
             log.error("Failed to save audit log for requestId: {}", auditLog.getRequestId(), e);
+            return null;
         }
     }
 }

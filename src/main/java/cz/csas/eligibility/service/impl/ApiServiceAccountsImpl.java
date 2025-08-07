@@ -32,13 +32,6 @@ public class ApiServiceAccountsImpl implements ApiServiceAccounts {
         this.accountsApiKey = accountsApiKey;
     }
 
-    /**
-     * Fetches the list of accounts for the given client ID and correlation ID.
-     * @param clientId      the client identifier (required)
-     * @param correlationId the correlation id for tracing (optional)
-     * @return list of Account; may be empty if client has no accounts
-     * @throws ExternalApiException on communication or server errors
-     */
     @Override
     public List<Account> getClientAccounts(String clientId, String correlationId) throws ExternalApiException {
         // Build the request payload

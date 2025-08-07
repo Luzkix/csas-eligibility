@@ -31,7 +31,7 @@ public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
         String requestId = UUID.randomUUID().toString();
         long startTime = System.currentTimeMillis();
 
-        // Sestavení auditního záznamu pro request
+        // Assembly audit log record for the request
         AuditLog.AuditLogBuilder auditLogBuilder = AuditLog.builder()
                 .requestId(requestId)
                 .apiName(determineApiName(request.getURI().getHost()))
@@ -44,15 +44,15 @@ public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
 
         ClientHttpResponse response = null;
         try {
-            // Vykonání požadavku
+            // execute request
             response = execution.execute(request, body);
 
-            // Čtení response
+            // read response
             String responseBody = StreamUtils.copyToString(response.getBody(), StandardCharsets.UTF_8);
 
             long executionTime = System.currentTimeMillis() - startTime;
 
-            // Dokončení auditního záznamu
+            // assembly audit log record for response
             AuditLog auditLog = auditLogBuilder
                     .responseStatus(response.getStatusCode().value())
                     .responseHeaders(response.getHeaders().toString())
@@ -61,7 +61,7 @@ public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
                     .success(response.getStatusCode().is2xxSuccessful())
                     .build();
 
-            // Asynchronní uložení do DB
+            // save audit log to DB (asynchronously)
             auditLogService.saveAuditLog(auditLog);
 
             log.info("Audit log: API call completed - RequestId: {}, CorrelationId: {}, API: {}, Status: {}, Duration: {}ms",
@@ -72,7 +72,7 @@ public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
         } catch (Exception e) {
             long executionTime = System.currentTimeMillis() - startTime;
 
-            // Auditní záznam pro chybu
+            // assembly audit log record in case of error
             AuditLog auditLog = auditLogBuilder
                     .executionTimeMs(executionTime)
                     .success(false)
