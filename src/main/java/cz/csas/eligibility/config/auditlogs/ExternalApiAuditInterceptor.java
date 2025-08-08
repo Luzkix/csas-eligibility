@@ -1,4 +1,4 @@
-package cz.csas.eligibility.interceptor;
+package cz.csas.eligibility.config.auditlogs;
 
 import cz.csas.eligibility.entity.AuditLog;
 import cz.csas.eligibility.service.AuditLogService;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
+public class ExternalApiAuditInterceptor implements ClientHttpRequestInterceptor {
 
     private final AuditLogService auditLogService;
 
@@ -40,7 +40,7 @@ public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
                 .requestHeaders(request.getHeaders().toString())
                 .requestBody(body.length > 0 ? new String(body, StandardCharsets.UTF_8) : null)
                 .correlationId(extractCorrelationId(request))
-                .userId("SYSTEM"); //mohlo by zde byt id uzivatele pokud by se eligibility proverovalo rucne treba poradcem z frontendu
+                .userId(extractUserId(request));
 
         ClientHttpResponse response = null;
         try {
@@ -51,6 +51,7 @@ public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
             String responseBody = StreamUtils.copyToString(response.getBody(), StandardCharsets.UTF_8);
 
             long executionTime = System.currentTimeMillis() - startTime;
+            boolean isSuccess = response.getStatusCode().is2xxSuccessful();
 
             // assembly audit log record for response
             AuditLog auditLog = auditLogBuilder
@@ -58,13 +59,14 @@ public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
                     .responseHeaders(response.getHeaders().toString())
                     .responseBody(responseBody)
                     .executionTimeMs(executionTime)
-                    .success(response.getStatusCode().is2xxSuccessful())
+                    .success(isSuccess)
                     .build();
 
             // save audit log to DB (asynchronously)
             auditLogService.saveAuditLog(auditLog);
 
-            log.info("Audit log: API call completed - RequestId: {}, CorrelationId: {}, API: {}, Status: {}, Duration: {}ms",
+            log.info("Audit log: External API call completed with result {} - RequestId: {}, CorrelationId: {}, API: {}, Status: {}, Duration: {}ms",
+                    isSuccess? "SUCCESS" : "FAILURE",
                     requestId, extractCorrelationId(request), auditLog.getApiName(), response.getStatusCode().value(), executionTime);
 
             return response;
@@ -82,7 +84,7 @@ public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
 
             auditLogService.saveAuditLog(auditLog);
 
-            log.error("Audit log: API call failed - RequestId: {}, CorrelationId: {}, API: {}, Duration: {}ms, Error type: {}, Error message: {}",
+            log.error("Audit log: External API call failed - RequestId: {}, CorrelationId: {}, API: {}, Duration: {}ms, Error type: {}, Error message: {}",
                     requestId, extractCorrelationId(request), auditLog.getApiName(), executionTime, e.getClass().getName(), e.getMessage());
 
             throw e;
@@ -95,8 +97,6 @@ public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
                 return "AccountsServer";
             } else if (host.contains("clients.cluster.domain.cz")) {
                 return "ClientsServer";
-            } else if (host.contains("localhost")) {
-                return "ApplicationServer";
             }
         }
         return "Unknown";
@@ -104,5 +104,11 @@ public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
 
     private String extractCorrelationId(HttpRequest request) {
         return request.getHeaders().getFirst("correlation-id");
+    }
+
+    private String extractUserId(HttpRequest request) {
+        // Implemented logic for extraction of user ID from JWT or from session
+        // We have no such logic now, therefore SYSTEM
+        return "SYSTEM";
     }
 }

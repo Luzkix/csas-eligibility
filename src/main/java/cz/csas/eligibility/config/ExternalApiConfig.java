@@ -2,7 +2,7 @@ package cz.csas.eligibility.config;
 
 import cz.csas.eligibility.api_accounts.api.AccountsServerApi;
 import cz.csas.eligibility.api_clients.api.ClientsServerApi;
-import cz.csas.eligibility.interceptor.AuditLoggingInterceptor;
+import cz.csas.eligibility.config.auditlogs.ExternalApiAuditInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,19 +15,19 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class ExternalApiConfig {
 
-    private final AuditLoggingInterceptor auditLoggingInterceptor;
+    private final ExternalApiAuditInterceptor externalApiAuditInterceptor;
 
     @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
 
-        // Buffering factory umožní číst response body vícekrát
+        // Buffering factory allows to read response body multiple times
         restTemplate.setRequestFactory(
                 new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory())
         );
 
-        // Přidání audit interceptoru
-        restTemplate.getInterceptors().add(auditLoggingInterceptor);
+        // Add interceptor
+        restTemplate.getInterceptors().add(externalApiAuditInterceptor);
 
         return restTemplate;
     }
