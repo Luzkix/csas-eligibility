@@ -1,6 +1,8 @@
 package cz.csas.eligibility.utils;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
@@ -17,5 +19,14 @@ public class DateUtils {
         LocalDate today = LocalDate.now();
         int age = Period.between(dateOfBirth, today).getYears();
         return age >= 18;
+    }
+
+    /**
+     * Converts LocalDateTime into OffsetDateTime.
+     * @param localDateTime is date time in LocalDateTime format
+     * @return OffsetDateTime; converted LocalDateTime into OffsetDateTime
+     */
+    public static OffsetDateTime convertToSystemOffsetDateTime(LocalDateTime localDateTime) {
+        return localDateTime == null ? null :localDateTime.atOffset(OffsetDateTime.now().getOffset());
     }
 }

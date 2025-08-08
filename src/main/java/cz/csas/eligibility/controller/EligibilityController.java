@@ -17,14 +17,9 @@ public class EligibilityController implements ApplicationServerApi {
     public ResponseEntity<GetEligibilityResponse> apiV1EligibilityGet(String clientId, String correlationId) {
         GetEligibilityResponse response = eligibilityService.evaluateEligibility(clientId, correlationId);
 
-        if (response != null) {
-            return ResponseEntity
-                    .status(200)
-                    .header("correlation-id", correlationId)
-                    .body(response);
-        } else return ResponseEntity
-                .status(400)
+        return ResponseEntity
+                .status(200)
                 .header("correlation-id", correlationId)
-                .body(null);
+                .body(response);
     }
 }

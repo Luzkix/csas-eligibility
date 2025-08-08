@@ -269,6 +269,27 @@ components:
       type: string
       format: UUID v4
       example: e02ff909-c6e6-4f7d-8937-bab69351e2d4
+    ErrorDto:
+      type: object
+      properties:
+        errorStatusValue:
+          type: integer
+          format: int32
+          example: 404
+        errorStatus:
+          type: string
+          example: BAD_REQUEST
+        errorTime:
+          type: string
+          format: date-time
+          example: "2018-08-29T23:20:50"
+        errorMessage:
+          type: string
+          example: User with same username/email and with active account already exists
+      required:
+        - errorStatusValue
+        - errorStatus
+        - errorTime
   requestBodies:
     GetAccounts:
       content:
@@ -287,6 +308,10 @@ components:
           schema:
             $ref: '#/components/schemas/correlationId'
           required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDto'
     Unauthorized:
       description: Neautorizované volání
       headers:

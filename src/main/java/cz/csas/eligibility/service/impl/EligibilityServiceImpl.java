@@ -1,6 +1,7 @@
 package cz.csas.eligibility.service.impl;
 
 import cz.csas.eligibility.entity.Eligibility;
+import cz.csas.eligibility.exceptions.EligibilityApiException;
 import cz.csas.eligibility.model.Account;
 import cz.csas.eligibility.model.GetClientDetailResponse;
 import cz.csas.eligibility.model.GetEligibilityResponse;
@@ -58,7 +59,8 @@ public class EligibilityServiceImpl implements EligibilityService {
         } catch (Exception e) {
             log.error("Error occurred while evaluating eligibility! CliendId: {}, CorrelationId: {}, Error message: {}", clientId, correlationId, e.getMessage(), e);
             saveResult(clientId, correlationId, Eligibility.EligibilityResultEnum.ERROR);
-            return null;
+
+            throw new EligibilityApiException(correlationId, e.getMessage(), e);
         }
     }
 
