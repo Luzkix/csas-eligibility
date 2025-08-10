@@ -1,0 +1,24 @@
+0. replace keyword "docker" for "podman" if using podman
+1. build docker image from Dockerfile
+docker build -f Dockerfile -t luzkix/csas-eligibility:latest --no-cache .
+
+2. push image to Docker hub
+docker push luzkix/csas-eligibility:latest
+
+3. First run postgres DB in Docker container and then run csas-eligibility-app in Docker container. Specific server address host.containers.internal is used instead of localhost to access the app on localhost in macos (replace it for real server number in your case)
+docker run -d --name case-study-db \
+  -e POSTGRES_DB=case_study \
+  -e POSTGRES_USER=orders \
+  -e POSTGRES_PASSWORD=Passw0rd#1 \
+  -p 5433:5432 \
+  postgres:16.9
+
+docker run -d \
+  --name csas-eligibility-app \
+  -p 8080:8080 \
+  -e SERVER_PORT=8080 \
+  -e LOGGING_LVL=ERROR \
+  -e SPRING_DATASOURCE_URL="jdbc:postgresql://host.containers.internal:5433/case_study" \
+  -e SPRING_DATASOURCE_USERNAME="orders" \
+  -e SPRING_DATASOURCE_PASSWORD="Passw0rd#1" \
+  luzkix/csas-eligibility:latest
