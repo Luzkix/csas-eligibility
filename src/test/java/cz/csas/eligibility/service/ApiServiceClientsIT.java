@@ -85,8 +85,8 @@ class ApiServiceClientsIT {
         try {
             GetClientDetailResponse detail = clientsService.getClientDetail(CLIENT_ID, CORRELATION_ID);
         } catch (Exception e) {
-            //note accounts from some reason always returns null (probably some problem with openapi deserialization of the response which i could not figure out.
-            // But main task here is to check audit logs not the response so it does not matter.
+            // note: `getClientDetail` from some reason always returns null (probably some problem with openapi deserialization of the response which i could not figure out - so it is some problem with swagger API or test json).
+            // But main task here is to check audit logs not the response so it does not matter in this test.
         }
 
         // Audit log
