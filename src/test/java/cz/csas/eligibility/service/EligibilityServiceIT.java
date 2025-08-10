@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -35,7 +35,6 @@ import static org.mockito.Mockito.when;
  */
 @SpringBootTest
 @Transactional
-@Import(EligibilityServiceIT.TestConfig.class)
 class EligibilityServiceIT {
 
     @Autowired
@@ -338,15 +337,19 @@ class EligibilityServiceIT {
         assertThat(notEligibleResults.get(0).getClientId()).isEqualTo(notEligibleClientId);
     }
 
-    //CONFIG
+    //CONFIG - mocking external api services.
+    // Note: @Primary solved the issue when these beans were influencing also other IT tests
+    // (spring was detecting multiple beans for e.g. ApiServiceAccounts - one of which was from this class. @Primary solved it)
     @TestConfiguration
     static class TestConfig {
 
         @Bean
+        @Primary
         public ApiServiceAccounts apiServiceAccounts() {
             return Mockito.mock(ApiServiceAccounts.class);
         }
         @Bean
+        @Primary
         public ApiServiceClients apiServiceClients() {
             return Mockito.mock(ApiServiceClients.class);
         }
