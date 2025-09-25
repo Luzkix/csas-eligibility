@@ -1,0 +1,306 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v1
+servers:
+  - url: http://localhost:8080
+    description: Application server
+  - url: http://clients.cluster.domain.cz:443
+    description: Clients server
+  - url: https://accounts.cluster.domain.cz
+    description: Accounts server
+paths:
+  /api/v1/eligibility:
+    get:
+      tags:
+        - Application server
+      parameters:
+        - name: clientId
+          in: header
+          description: Jednotný identifikátor klienta
+          schema:
+            $ref: '#/components/schemas/clientId'
+          required: true
+        - name: correlation-id
+          in: header
+          description: Unikátní bezvýznamový identifikátor proplouvající celým flow
+          schema:
+            $ref: '#/components/schemas/correlationId'
+          required: false
+      responses:
+        '200':
+          $ref: '#/components/responses/GetEligibility'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /{clientId}:
+    get:
+      tags:
+        - Clients server
+      parameters:
+        - name: clientId
+          in: path
+          description: Jednotný identifikátor klienta
+          schema:
+            $ref: '#/components/schemas/clientId'
+          required: true
+        - name: correlation-id
+          in: header
+          description: Unikátní bezvýznamový identifikátor proplouvající celým flow
+          schema:
+            $ref: '#/components/schemas/correlationId'
+          required: false
+        - name: api-key
+          in: header
+          description: Jedinečný identifikátor autorizující aplikaci pro dané API
+          schema:
+            $ref: '#/components/schemas/api-key'
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/GetClientDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /list:
+    get:
+      tags:
+        - Accounts server
+      parameters:
+        - name: clientId
+          in: header
+          description: Jednotný identifikátor klienta
+          schema:
+            $ref: '#/components/schemas/clientId'
+          required: true
+        - name: correlation-id
+          in: header
+          description: Unikátní bezvýznamový identifikátor proplouvající celým flow
+          schema:
+            $ref: '#/components/schemas/correlationId'
+          required: false
+        - name: api-key
+          in: header
+          description: Jedinečný identifikátor autorizující aplikaci pro dané API
+          schema:
+            $ref: '#/components/schemas/api-key'
+          required: true
+      requestBody:
+        $ref: '#/components/requestBodies/GetAccounts'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAccounts'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    GetClientDetailResponse:
+      type: object
+      properties:
+        birthDate:
+          type: string
+          format: ISO date
+          example: 1954-07-04
+        clientVerificationLevel:
+          type: integer
+          example: 3
+        forename:
+          type: string
+          example: Filip
+        primaryEmail:
+          type: string
+          example: test5961813@csas.cz
+        gender:
+          type: string
+          enum:
+            - M
+            - F
+            - NB
+            - O
+          example: M
+        primaryPhone:
+          type: string
+          example: +420953186843
+        pep:
+          type: boolean
+          example: false
+        verifiedBy:
+          type: string
+          example: 45244782
+        surname:
+          type: string
+          example: Moravec
+        clientId:
+          $ref: '#/components/schemas/clientId'
+      required:
+        - birthDate
+        - forename
+        - surname
+        - gender
+        - pep
+    GetAccountsRequest:
+      type: object
+      properties:
+        clientId:
+          $ref: '#/components/schemas/clientId'
+      required:
+        - clientId
+    GetAccountsResponse:
+      type: object
+      properties:
+        client:
+          $ref: '#/components/schemas/Client'
+        accounts:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Account'
+          example:
+            - product_id: SB0_22291
+              iban: CZ3908000000000735147003
+              currency: CZK
+      required:
+        - client
+    GetEligibilityResponse:
+      type: object
+      properties:
+        eligible:
+          type: boolean
+          example: true
+        reasons:
+          type: array
+          items:
+            type: string
+            enum:
+              - NO_ADULT
+              - NO_ACCOUNT
+      required:
+        - eligible
+    Account:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/NationalAccount'
+        - $ref: '#/components/schemas/InternationalAccount'
+      properties:
+        product_id:
+          type: string
+          example: SB0_22291
+        closing_date:
+          type: string
+          format: ISO date-time
+    NationalAccount:
+      type: object
+      properties:
+        prefix:
+          type: string
+        number:
+          type: string
+        bank_code:
+          type: string
+    InternationalAccount:
+      type: object
+      properties:
+        iban:
+          type: string
+        currency:
+          $ref: '#/components/schemas/Currency'
+    Currency:
+      type: string
+      enum:
+        - CZK
+        - USD
+        - EUR
+        - CHF
+        - GBP
+    Client:
+      type: object
+      properties:
+        forename:
+          type: string
+          example: Filip
+        surname:
+          type: string
+          example: Moravec
+        clientId:
+          $ref: '#/components/schemas/clientId'
+    correlationId:
+      type: string
+      format: UUID v4
+      example: 57fe7696-6151-4ecc-ab8b-8840e3872185
+    clientId:
+      type: string
+      pattern: "[0-9]{2}([0-9]{2}-){3}([0-9]{2}\\.){3}[0-9]{6}"
+      example: 1234-56-78-90.12.34.567890
+    api-key:
+      type: string
+      format: UUID v4
+      example: e02ff909-c6e6-4f7d-8937-bab69351e2d4
+  requestBodies:
+    GetAccounts:
+      content:
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/GetAccountsRequest'
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetAccountsRequest'
+  responses:
+    BadRequest:
+      description: Požadavek nelze zpracovat
+      headers:
+        correlation-id:
+          description: Unikátní bezvýznamový identifikátor proplouvající celým flow
+          schema:
+            $ref: '#/components/schemas/correlationId'
+          required: true
+    Unauthorized:
+      description: Neautorizované volání
+      headers:
+        correlation-id:
+          description: Unikátní bezvýznamový identifikátor proplouvající celým flow
+          schema:
+            $ref: '#/components/schemas/correlationId'
+          required: true
+    GetEligibility:
+      description: Úspěch, obsahuje data
+      headers:
+        correlation-id:
+          description: Unikátní bezvýznamový identifikátor proplouvající celým flow
+          schema:
+            $ref: '#/components/schemas/correlationId'
+          required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetEligibilityResponse'
+          example:
+            eligible: true
+    GetClientDetail:
+      description: Úspěch, obsahuje data
+      headers:
+        correlation-id:
+          description: Unikátní bezvýznamový identifikátor proplouvající celým flow
+          schema:
+            $ref: '#/components/schemas/correlationId'
+          required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetClientDetailResponse'
+    GetAccounts:
+      description: Úspěch, obsahuje data
+      headers:
+        correlation-id:
+          description: Unikátní bezvýznamový identifikátor proplouvající celým flow
+          schema:
+            $ref: '#/components/schemas/correlationId'
+          required: true
+      content:
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/GetAccountsResponse'
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetAccountsResponse'
